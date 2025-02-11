@@ -15,25 +15,33 @@ class CollectionSeeder extends AbstractSeeder
      *
      */
     public function run(): void
-    {
-        $collections = $this->getSeedData('collections');
+{
+    $collections = $this->getSeedData('collections');
 
-        $collectionGroup = CollectionGroup::first();
+    $collectionGroup = CollectionGroup::first();
 
-        DB::transaction(function () use ($collections, $collectionGroup) {
-            foreach ($collections as $collection) {
-                Collection::create([
-                    'collection_group_id' => $collectionGroup->id,
-                    'attribute_data' => [
-                        'name' => new TranslatedText([
-                            'en' => new Text($collection->name),
-                        ]),
-                        'description' => new TranslatedText([
-                            'en' => new Text($collection->description),
-                        ]),
-                    ],
-                ]);
-            }
-        });
+    // Ensure $collectionGroup is not null before proceeding
+    if (!$collectionGroup) {
+        $collectionGroup = CollectionGroup::create([
+            'name' => 'Default Group',
+            'handle' => 'default-group', // Ensure this field is provided
+        ]);
     }
+
+    DB::transaction(function () use ($collections, $collectionGroup) {
+        foreach ($collections as $collection) {
+            Collection::create([
+                'collection_group_id' => $collectionGroup->id,
+                'attribute_data' => [
+                    'name' => new TranslatedText([
+                        'en' => new Text($collection->name),
+                    ]),
+                    'description' => new TranslatedText([
+                        'en' => new Text($collection->description),
+                    ]),
+                ],
+            ]);
+        }
+    });
+}
 }
