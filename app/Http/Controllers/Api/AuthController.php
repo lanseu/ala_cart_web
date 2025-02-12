@@ -10,11 +10,9 @@ use Illuminate\Http\Request;
 
 class AuthController extends Controller
 {
-    private $authService;
-
-    public function __construct(AuthService $authService)
+    public function __construct(private readonly AuthService $authService)
     {
-        $this->authService = $authService;
+        
     }
 
     public function register(RegisterRequest $request)
