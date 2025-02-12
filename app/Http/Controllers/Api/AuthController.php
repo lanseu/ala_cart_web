@@ -30,19 +30,29 @@ class AuthController extends Controller
     public function login(LoginRequest $request)
     {
         $user = $this->authService->authenticateUser($request->email, $request->password);
-
+    
         if (!$user) {
-            return response()->json(['message' => 'Invalid credentials'], 401);
+            return response()->json([
+                'message' => 'Invalid email or password. Please try again.'
+            ], 401);
         }
-
+    
         $token = $user->createToken('com.example.ala_cart')->plainTextToken;
-
+    
+        return response()->json([
+            'message' => 'Login successful',
+            'access_token' => $token,
+            'user' => $user->only(['id', 'email', 'full_name']), // 'full_name' is now included
+        ]);
     }
+    
 
     public function logout(Request $request)
     {
         $request->user()->tokens()->delete();
 
-        ;
+        return response()->json([
+            'message'=> 'User has logged out successfully'
+        ],200);
     }
 }

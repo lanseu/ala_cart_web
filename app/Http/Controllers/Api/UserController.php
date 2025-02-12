@@ -8,7 +8,7 @@ use App\Http\Requests\UserUpdateRequest;
 use App\Services\UserService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-
+use Auth;
 
 class UserController extends Controller
 {
@@ -40,12 +40,11 @@ class UserController extends Controller
     /**
      * Display the specified user.
      */
-    public function show(string $id): JsonResponse
+    public function show(Request $request)
     {
-        $user = $this->userService->getUserById($id);
-        return response()->json($user);
+        return response()->json(Auth::user());
     }
-
+    
     /**
      * Update the specified user.
      */
