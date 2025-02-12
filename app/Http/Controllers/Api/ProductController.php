@@ -9,11 +9,9 @@ use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    private $productService;
-
-    public function __construct(ProductService $productService)
+    public function __construct( private readonly ProductService $productService)
     {
-        $this->productService = $productService;
+        
     }
 
     /**
