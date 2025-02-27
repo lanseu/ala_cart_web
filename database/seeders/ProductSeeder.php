@@ -20,14 +20,11 @@ use Lunar\Models\ProductOptionValue;
 use Lunar\Models\ProductType;
 use Lunar\Models\ProductVariant;
 use Lunar\Models\TaxClass;
-use App\Jobs\GenerateVariants;
 
 class ProductSeeder extends AbstractSeeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
     public function run(): void
     {
@@ -86,7 +83,7 @@ class ProductSeeder extends AbstractSeeder
                     'stock' => 500,
                 ]);
 
-                if (!count($product->options ?? [])) {
+                if (! count($product->options ?? [])) {
                     Price::create([
                         'customer_group_id' => null,
                         'currency_id' => $currency->id,
@@ -121,7 +118,7 @@ class ProductSeeder extends AbstractSeeder
                 $optionValueMapping = collect($product->options)->mapWithKeys(
                     function ($option) {
                         return [
-                            $option->name => $option->values
+                            $option->name => $option->values,
                         ];
                     }
                 )->toArray();
@@ -146,7 +143,7 @@ class ProductSeeder extends AbstractSeeder
                     }
 
                     $optionIds[$optionModel->id] = [
-                        'position' => $optionIndex + 1
+                        'position' => $optionIndex + 1,
                     ];
 
                     foreach ($option->values as $value) {
@@ -183,7 +180,7 @@ class ProductSeeder extends AbstractSeeder
                 $variants = MapVariantsToProductOptions::map($optionValueMapping, $variants, true);
 
                 foreach ($variants as $variant) {
-                    if (!$variant['variant_id']) {
+                    if (! $variant['variant_id']) {
                         $variantModel = ProductVariant::create([
                             'product_id' => $productModel->id,
                             'purchasable' => 'always',

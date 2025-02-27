@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Lunar\Models\Country;
 use Lunar\Models\Currency;
@@ -10,7 +9,6 @@ use Lunar\Models\Price;
 use Lunar\Shipping\Models\ShippingMethod;
 use Lunar\Shipping\Models\ShippingRate;
 use Lunar\Shipping\Models\ShippingZone;
-use Lunar\Shipping\Models\ShippingZonePostcode;
 
 class ShippingSeeder extends Seeder
 {
@@ -28,7 +26,7 @@ class ShippingSeeder extends Seeder
             'driver' => 'ship-by',
             'data' => [
                 'charge_by' => 'cart_total',
-            ]
+            ],
         ]);
 
         $ukShippingZone = ShippingZone::create([
@@ -72,7 +70,7 @@ class ShippingSeeder extends Seeder
             'driver' => 'ship-by',
             'data' => [
                 'charge_by' => 'cart_total',
-            ]
+            ],
         ]);
 
         $usShippingZone = ShippingZone::create([
@@ -149,7 +147,7 @@ class ShippingSeeder extends Seeder
         );
 
         Price::create([
-            'priceable_type' =>(new ShippingRate)->getMorphClass(),
+            'priceable_type' => (new ShippingRate)->getMorphClass(),
             'priceable_id' => $euroShippingRate->id,
             'price' => 2000,
             'min_quantity' => 1,

@@ -14,8 +14,7 @@ class ShippingModifier
          * If you do not wish to use the shipping add-on you can add
          * your own shipping options that will appear at checkout
          */
-
-        if(config('shipping-tables.enabled') == false){
+        if (config('shipping-tables.enabled') == false) {
             \Lunar\Facades\ShippingManifest::addOption(
                 new \Lunar\DataTypes\ShippingOption(
                     name: 'Basic Delivery',

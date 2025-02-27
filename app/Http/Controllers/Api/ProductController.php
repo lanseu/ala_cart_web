@@ -5,14 +5,10 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ProductRequest;
 use App\Services\ProductService;
-use Illuminate\Http\Request;
 
 class ProductController extends Controller
 {
-    public function __construct( private readonly ProductService $productService)
-    {
-        
-    }
+    public function __construct(private readonly ProductService $productService) {}
 
     /**
      * Display a listing of the products.
@@ -20,6 +16,7 @@ class ProductController extends Controller
     public function index()
     {
         $products = $this->productService->getAllProducts();
+
         return response()->json($products);
     }
 
@@ -29,9 +26,10 @@ class ProductController extends Controller
     public function store(ProductRequest $request)
     {
         $product = $this->productService->createProduct($request->validated());
+
         return response()->json([
             'message' => 'Product created successfully',
-            'product' => $product
+            'product' => $product,
         ], 201);
     }
 
@@ -41,9 +39,10 @@ class ProductController extends Controller
     public function show(string $id)
     {
         $product = $this->productService->getProductById($id);
-        if (!$product) {
+        if (! $product) {
             return response()->json(['message' => 'Product not found'], 404);
         }
+
         return response()->json($product);
     }
 
@@ -53,12 +52,13 @@ class ProductController extends Controller
     public function update(ProductRequest $request, string $id)
     {
         $product = $this->productService->updateProduct($id, $request->validated());
-        if (!$product) {
+        if (! $product) {
             return response()->json(['message' => 'Product not found'], 404);
         }
+
         return response()->json([
             'message' => 'Product updated successfully',
-            'product' => $product
+            'product' => $product,
         ]);
     }
 
@@ -68,9 +68,10 @@ class ProductController extends Controller
     public function destroy(string $id)
     {
         $deleted = $this->productService->deleteProduct($id);
-        if (!$deleted) {
+        if (! $deleted) {
             return response()->json(['message' => 'Product not found'], 404);
         }
+
         return response()->json(['message' => 'Product deleted successfully']);
     }
 }

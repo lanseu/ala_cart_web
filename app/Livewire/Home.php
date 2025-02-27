@@ -12,7 +12,7 @@ class Home extends Component
     /**
      * Return the sale collection.
      */
-    public function getSaleCollectionProperty(): Collection | null
+    public function getSaleCollectionProperty(): ?Collection
     {
         return Url::whereElementType((new Collection)->getMorphClass())->whereSlug('sale')->first()?->element ?? null;
     }

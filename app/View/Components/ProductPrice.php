@@ -2,7 +2,6 @@
 
 namespace App\View\Components;
 
-use Exception;
 use Illuminate\View\Component;
 use Illuminate\View\View;
 use Lunar\Facades\Pricing;
@@ -22,9 +21,9 @@ class ProductPrice extends Component
      */
     public function __construct($product = null, $variant = null)
     {
-            $this->price = Pricing::for(
-                $variant ?: $product->variants->first()
-            )->get()->matched;
+        $this->price = Pricing::for(
+            $variant ?: $product->variants->first()
+        )->get()->matched;
     }
 
     /**

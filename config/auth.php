@@ -69,6 +69,13 @@ return [
         //     'driver' => 'database',
         //     'table' => 'users',
         // ],
+        'guards' => [
+            'api' => [
+                'driver' => 'passport',  // Or 'sanctum'
+                'provider' => 'users',
+            ],
+        ],
+
     ],
 
     /*

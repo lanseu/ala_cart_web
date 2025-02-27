@@ -10,7 +10,6 @@ class AttributeSeeder extends AbstractSeeder
 {
     /**
      * Run the database seeds.
-     *
      */
     public function run(): void
     {

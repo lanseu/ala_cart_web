@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Services\ProfilePictureServiceInterface;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 use App\Models\User;
+use App\Services\ProfilePictureServiceInterface;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProfilePictureController extends Controller
 {
@@ -27,7 +26,7 @@ class ProfilePictureController extends Controller
         $user = Auth::user();
 
         // ✅ Ensure user is authenticated before proceeding
-        if (!$user instanceof User) {
+        if (! $user instanceof User) {
             return response()->json(['error' => 'Unauthorized'], 401);
         }
 
@@ -36,7 +35,7 @@ class ProfilePictureController extends Controller
 
         return response()->json([
             'message' => 'Profile picture uploaded successfully',
-            'profile_picture_url' => Storage::url($path) // ✅ Corrected path generation
+            'profile_picture_url' => asset('storage/'.$path),
         ]);
     }
 }
