@@ -8,7 +8,7 @@ class ProductService
 {
     public function getAllProducts()
     {
-        return Product::with(['images', 'prices', 'variants.values'])
+        return Product::with(['images', 'prices', 'variants.values', 'reviews'])
             ->paginate()
             ->through(function ($product) {
                 foreach ($product->images as $image) {
@@ -17,6 +17,8 @@ class ProductService
     
                 $product->price = $product->prices->first()?->price->value ?? null;
                 $product->stock = $product->prices->first()?->priceable?->stock ?? 0;
+
+                $product->average_rating = round($product->reviews->avg('rating') ?? 0, 1);
     
                 // Attach variants with option values
                 $product->variants = $product->variants->map(function ($variant) {
@@ -44,7 +46,7 @@ class ProductService
 
     public function getProductById($id)
     {
-        return Product::find($id);
+        return Product::with('reviews')->find($id)?->append('average_rating');
     }
 
     public function updateProduct($id, array $data)
