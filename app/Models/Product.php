@@ -3,7 +3,6 @@
 namespace App\Models;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\Review;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Lunar\Models\Product as LunarProduct;
 
 class Product extends LunarProduct
