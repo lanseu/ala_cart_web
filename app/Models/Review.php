@@ -6,15 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Models\Product;
-class Review extends Model
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
+
+class Review extends Model implements HasMedia
 {
-    use HasFactory;
+    use HasFactory, InteractsWithMedia;
 
-    protected $fillable = ['user_id', 'product_id', 'rating', 'review', 'images'];
-
-    protected $casts = [
-        'images' => 'array',
-    ];
+    protected $fillable = ['user_id', 'product_id', 'rating', 'review'];
 
     public function user(): BelongsTo
     {
@@ -24,5 +23,11 @@ class Review extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class, 'product_id', 'id');
+    }
+  
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('reviews')
+            ->useDisk('public'); 
     }
 }

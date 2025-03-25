@@ -5,8 +5,7 @@ namespace Database\Factories;
 use App\Models\Review;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use Lunar\Models\Product; 
-use Faker\Factory as FakerFactory;
+use Lunar\Models\Product;
 
 class ReviewFactory extends Factory
 {
@@ -14,17 +13,27 @@ class ReviewFactory extends Factory
 
     public function definition(): array
     {
-        $faker = FakerFactory::create('en_US');
+    
+        $product = Product::inRandomOrder()->first() ?? Product::factory()->create();
+        $user = User::inRandomOrder()->first() ?? User::factory()->create();
 
-        return [
-            'user_id' => User::inRandomOrder()->first()?->id ?? User::factory(),
-            'product_id' => Product::inRandomOrder()->first()?->id ?? Product::factory(), 
+        $imageFile = $product->image ?? 'default.jpg';
+        $imagePath = base_path("database/seeders/data/images/{$imageFile}");
+
+      
+        $review = Review::create([
+            'user_id' => $user->id,
+            'product_id' => $product->id,
             'rating' => $this->faker->numberBetween(1, 5),
-            'review' => $faker->realText(100),
-            'images' => json_encode([
-                $this->faker->imageUrl(200, 200, 'fashion'),
-                $this->faker->imageUrl(200, 200, 'fashion'),
-            ]),
-        ];
+            'review' => $this->faker->realText(100),
+        ]);
+
+        if (file_exists($imagePath)) {
+            $review->addMedia($imagePath)
+                ->preservingOriginal()
+                ->toMediaCollection('images');
+        }
+
+        return $review->toArray();
     }
 }
