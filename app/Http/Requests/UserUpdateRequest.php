@@ -24,7 +24,7 @@ class UserUpdateRequest extends FormRequest
                 Rule::unique('users')->ignore($this->route('id')),
                 function ($attribute, $value, $fail) {
                     if (auth()->user()->email !== $value) {
-                        if (!request()->has('current_password') || !\Hash::check(request('current_password'), auth()->user()->password)) {
+                        if (! request()->has('current_password') || ! \Hash::check(request('current_password'), auth()->user()->password)) {
                             return $fail('You must provide your current password to change your email.');
                         }
                     }
@@ -35,5 +35,4 @@ class UserUpdateRequest extends FormRequest
             'address' => 'nullable|string|max:500',
         ];
     }
-    
 }

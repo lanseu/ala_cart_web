@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
+use App\Models\Category;
 use App\Models\Message;
 use App\Models\User;
-use App\Models\Category;
+use Illuminate\Database\Seeder;
 
 class MessageSeeder extends Seeder
 {
@@ -14,7 +14,7 @@ class MessageSeeder extends Seeder
         $user = User::firstOrCreate([
             'name' => 'John Doe',
             'email' => 'john@example.com',
-            'password' => bcrypt('password')
+            'password' => bcrypt('password'),
         ]);
 
         $category = Category::firstOrCreate(['name' => 'General']);

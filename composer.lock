@@ -1075,16 +1075,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.342.12",
+            "version": "3.342.14",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "29c2c34ddc7ff02ec865355fc235c78acd095fcf"
+                "reference": "587475eec402e3d0326e5021cbbc1cb1e8bf4f93"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/29c2c34ddc7ff02ec865355fc235c78acd095fcf",
-                "reference": "29c2c34ddc7ff02ec865355fc235c78acd095fcf",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/587475eec402e3d0326e5021cbbc1cb1e8bf4f93",
+                "reference": "587475eec402e3d0326e5021cbbc1cb1e8bf4f93",
                 "shasum": ""
             },
             "require": {
@@ -1166,9 +1166,9 @@
             "support": {
                 "forum": "https://github.com/aws/aws-sdk-php/discussions",
                 "issues": "https://github.com/aws/aws-sdk-php/issues",
-                "source": "https://github.com/aws/aws-sdk-php/tree/3.342.12"
+                "source": "https://github.com/aws/aws-sdk-php/tree/3.342.14"
             },
-            "time": "2025-03-24T18:06:44+00:00"
+            "time": "2025-03-26T19:03:32+00:00"
         },
         {
             "name": "barryvdh/laravel-dompdf",
@@ -5403,16 +5403,16 @@
         },
         {
             "name": "lunarphp/core",
-            "version": "1.0.0-beta16",
+            "version": "1.0.0-beta17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lunarphp/core.git",
-                "reference": "11319642733e815adf520261bc5cc54636bf3587"
+                "reference": "2e994d57b0a247a0aad1067813c2e84b4b32f23c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lunarphp/core/zipball/11319642733e815adf520261bc5cc54636bf3587",
-                "reference": "11319642733e815adf520261bc5cc54636bf3587",
+                "url": "https://api.github.com/repos/lunarphp/core/zipball/2e994d57b0a247a0aad1067813c2e84b4b32f23c",
+                "reference": "2e994d57b0a247a0aad1067813c2e84b4b32f23c",
                 "shasum": ""
             },
             "require": {
@@ -5472,7 +5472,7 @@
                 "store"
             ],
             "support": {
-                "source": "https://github.com/lunarphp/core/tree/1.0.0-beta16"
+                "source": "https://github.com/lunarphp/core/tree/1.0.0-beta17"
             },
             "funding": [
                 {
@@ -5480,20 +5480,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-14T14:24:50+00:00"
+            "time": "2025-03-25T14:06:40+00:00"
         },
         {
             "name": "lunarphp/lunar",
-            "version": "1.0.0-beta16",
+            "version": "1.0.0-beta17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lunarphp/admin.git",
-                "reference": "aef8d784db8400f9f906c095e45f240e567344f3"
+                "reference": "0e41fb19bb5a031402f88038fe90e3bd96fb5114"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lunarphp/admin/zipball/aef8d784db8400f9f906c095e45f240e567344f3",
-                "reference": "aef8d784db8400f9f906c095e45f240e567344f3",
+                "url": "https://api.github.com/repos/lunarphp/admin/zipball/0e41fb19bb5a031402f88038fe90e3bd96fb5114",
+                "reference": "0e41fb19bb5a031402f88038fe90e3bd96fb5114",
                 "shasum": ""
             },
             "require": {
@@ -5531,7 +5531,7 @@
             ],
             "description": "Admin panel for LunarPHP",
             "support": {
-                "source": "https://github.com/lunarphp/admin/tree/1.0.0-beta16"
+                "source": "https://github.com/lunarphp/admin/tree/1.0.0-beta17"
             },
             "funding": [
                 {
@@ -5539,20 +5539,20 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-14T14:24:57+00:00"
+            "time": "2025-03-25T14:06:46+00:00"
         },
         {
             "name": "lunarphp/stripe",
-            "version": "1.0.0-beta16",
+            "version": "1.0.0-beta17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lunarphp/stripe.git",
-                "reference": "43536e7baad543e92cbd638d08b0305c5447b8a5"
+                "reference": "5112ac0c121323dca67177e99718d1d4d8dfcf98"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/lunarphp/stripe/zipball/43536e7baad543e92cbd638d08b0305c5447b8a5",
-                "reference": "43536e7baad543e92cbd638d08b0305c5447b8a5",
+                "url": "https://api.github.com/repos/lunarphp/stripe/zipball/5112ac0c121323dca67177e99718d1d4d8dfcf98",
+                "reference": "5112ac0c121323dca67177e99718d1d4d8dfcf98",
                 "shasum": ""
             },
             "require": {
@@ -5599,7 +5599,7 @@
                 "stripe"
             ],
             "support": {
-                "source": "https://github.com/lunarphp/stripe/tree/1.0.0-beta16"
+                "source": "https://github.com/lunarphp/stripe/tree/1.0.0-beta17"
             },
             "funding": [
                 {
@@ -5607,11 +5607,11 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-07T11:37:20+00:00"
+            "time": "2025-03-25T14:06:45+00:00"
         },
         {
             "name": "lunarphp/table-rate-shipping",
-            "version": "1.0.0-beta16",
+            "version": "1.0.0-beta17",
             "source": {
                 "type": "git",
                 "url": "https://github.com/lunarphp/table-rate-shipping.git",
@@ -5667,7 +5667,7 @@
             ],
             "support": {
                 "issues": "https://github.com/lunarphp/table-rate-shipping/issues",
-                "source": "https://github.com/lunarphp/table-rate-shipping/tree/1.0.0-beta16"
+                "source": "https://github.com/lunarphp/table-rate-shipping/tree/1.0.0-beta17"
             },
             "funding": [
                 {
@@ -6459,16 +6459,16 @@
         },
         {
             "name": "openspout/openspout",
-            "version": "v4.29.1",
+            "version": "v4.28.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/openspout/openspout.git",
-                "reference": "ec83106bc3922fe94c9d37976ba6b7259511c4c5"
+                "reference": "ab05a09fe6fce57c90338f83280648a9786ce36b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openspout/openspout/zipball/ec83106bc3922fe94c9d37976ba6b7259511c4c5",
-                "reference": "ec83106bc3922fe94c9d37976ba6b7259511c4c5",
+                "url": "https://api.github.com/repos/openspout/openspout/zipball/ab05a09fe6fce57c90338f83280648a9786ce36b",
+                "reference": "ab05a09fe6fce57c90338f83280648a9786ce36b",
                 "shasum": ""
             },
             "require": {
@@ -6478,17 +6478,17 @@
                 "ext-libxml": "*",
                 "ext-xmlreader": "*",
                 "ext-zip": "*",
-                "php": "~8.3.0 || ~8.4.0"
+                "php": "~8.2.0 || ~8.3.0 || ~8.4.0"
             },
             "require-dev": {
                 "ext-zlib": "*",
-                "friendsofphp/php-cs-fixer": "^3.71.0",
-                "infection/infection": "^0.29.14",
+                "friendsofphp/php-cs-fixer": "^3.68.3",
+                "infection/infection": "^0.29.10",
                 "phpbench/phpbench": "^1.4.0",
-                "phpstan/phpstan": "^2.1.8",
+                "phpstan/phpstan": "^2.1.2",
                 "phpstan/phpstan-phpunit": "^2.0.4",
-                "phpstan/phpstan-strict-rules": "^2.0.3",
-                "phpunit/phpunit": "^12.0.7"
+                "phpstan/phpstan-strict-rules": "^2",
+                "phpunit/phpunit": "^11.5.4"
             },
             "suggest": {
                 "ext-iconv": "To handle non UTF-8 CSV files (if \"php-mbstring\" is not already installed or is too limited)",
@@ -6536,7 +6536,7 @@
             ],
             "support": {
                 "issues": "https://github.com/openspout/openspout/issues",
-                "source": "https://github.com/openspout/openspout/tree/v4.29.1"
+                "source": "https://github.com/openspout/openspout/tree/v4.28.5"
             },
             "funding": [
                 {
@@ -6548,7 +6548,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2025-03-11T14:40:46+00:00"
+            "time": "2025-01-30T13:51:11+00:00"
         },
         {
             "name": "php-http/discovery",
@@ -10957,16 +10957,16 @@
         },
         {
             "name": "technikermathe/blade-lucide-icons",
-            "version": "v3.90.0",
+            "version": "v3.91.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/PascaleBeier/blade-lucide-icons.git",
-                "reference": "e06fa8ea2f331e330b15db6be68477f2276cfd6d"
+                "reference": "2711c4b7e96e5ee23c31eee8e92eb2e9ce058d6b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PascaleBeier/blade-lucide-icons/zipball/e06fa8ea2f331e330b15db6be68477f2276cfd6d",
-                "reference": "e06fa8ea2f331e330b15db6be68477f2276cfd6d",
+                "url": "https://api.github.com/repos/PascaleBeier/blade-lucide-icons/zipball/2711c4b7e96e5ee23c31eee8e92eb2e9ce058d6b",
+                "reference": "2711c4b7e96e5ee23c31eee8e92eb2e9ce058d6b",
                 "shasum": ""
             },
             "require": {
@@ -11016,9 +11016,9 @@
             ],
             "support": {
                 "issues": "https://github.com/PascaleBeier/blade-lucide-icons/issues",
-                "source": "https://github.com/PascaleBeier/blade-lucide-icons/tree/v3.90.0"
+                "source": "https://github.com/PascaleBeier/blade-lucide-icons/tree/v3.91.0"
             },
-            "time": "2025-03-19T00:06:47+00:00"
+            "time": "2025-03-26T00:07:22+00:00"
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",

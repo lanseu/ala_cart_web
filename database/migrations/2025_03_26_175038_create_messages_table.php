@@ -10,11 +10,11 @@ class CreateMessagesTable extends Migration
     {
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Message belongs to a User
-            $table->unsignedBigInteger('category_id'); // Explicitly define unsignedBigInteger
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade'); // Ensure correct reference
-            $table->unsignedBigInteger('parent_id')->nullable(); // Explicitly define unsignedBigInteger for self-referencing
-            $table->foreign('parent_id')->references('id')->on('messages')->onDelete('cascade'); // Self-referencing foreign key
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->unsignedBigInteger('category_id');
+            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
+            $table->unsignedBigInteger('parent_id')->nullable();
+            $table->foreign('parent_id')->references('id')->on('messages')->onDelete('cascade');
             $table->string('name');
             $table->string('iconpath');
             $table->text('chat');

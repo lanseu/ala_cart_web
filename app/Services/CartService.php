@@ -55,17 +55,15 @@ class CartService
 
     public function addItemToCart($userId, $productId, $quantity)
     {
-        $currency = Currency::first(); // Get default currency
-        $channel = Channel::first(); // Get default channel
+        $currency = Currency::first();
+        $channel = Channel::first();
 
-        // Find the customer linked to the user
         $customer = Customer::where('user_id', $userId)->first();
 
         if (! $customer) {
             return response()->json(['error' => 'Customer not found for this user'], 404);
         }
 
-        // Ensure the user has a cart
         $cart = Cart::firstOrCreate(
             ['user_id' => $userId],
             [
@@ -75,29 +73,25 @@ class CartService
             ]
         );
 
-        // Find the product variant
         $productVariant = ProductVariant::find($productId);
 
         if (! $productVariant) {
             return response()->json(['error' => 'Product variant not found'], 404);
         }
 
-        // Check if there is enough stock
         if ($productVariant->stock < $quantity) {
             return response()->json(['error' => 'Not enough stock available'], 400);
         }
 
-        // Add item to cart
         $cartLine = CartLine::updateOrCreate(
             [
                 'cart_id' => $cart->id,
                 'purchasable_id' => $productId,
-                'purchasable_type' => 'Lunar\Models\ProductVariant', // Adjust if necessary
+                'purchasable_type' => 'Lunar\Models\ProductVariant',
             ],
             ['quantity' => $quantity]
         );
 
-        // Reduce stock after adding to cart
         $productVariant->decrement('stock', $quantity);
 
         return response()->json([
@@ -107,14 +101,35 @@ class CartService
         ]);
     }
 
-    public function updateCartItem($userId, $cartLineId, $quantity)
+    public function updateCartItem($userId, $cartLineId, $newQuantity)
     {
         $cartLine = CartLine::whereHas('cart', fn ($query) => $query->where('user_id', $userId))
             ->findOrFail($cartLineId);
 
-        $cartLine->update(['quantity' => $quantity]);
+        $productVariant = ProductVariant::find($cartLine->purchasable_id);
 
-        return $cartLine;
+        if (! $productVariant) {
+            return response()->json(['error' => 'Product not found'], 404);
+        }
+
+        $stockDifference = $newQuantity - $cartLine->quantity;
+
+        // Check if stock is available
+        if ($stockDifference > 0 && $productVariant->stock < $stockDifference) {
+            return response()->json(['error' => 'Not enough stock available'], 400);
+        }
+
+        // Adjust stock based on quantity change
+        if ($stockDifference > 0) {
+            $productVariant->decrement('stock', $stockDifference);
+        } else {
+            $productVariant->increment('stock', abs($stockDifference));
+        }
+
+        // Update cart item quantity
+        $cartLine->update(['quantity' => $newQuantity]);
+
+        return ['success' => true, 'new_stock' => $productVariant->stock];
     }
 
     public function deleteCartItem($userId, $cartLineId)
@@ -122,16 +137,18 @@ class CartService
         $cartLine = CartLine::whereHas('cart', fn ($query) => $query->where('user_id', $userId))
             ->findOrFail($cartLineId);
 
-        $productId = $cartLine->product_id;
-        $product = Product::find($productId);
+        $product = Product::find($cartLine->product_id);
 
         if (! $product) {
             return response()->json(['error' => 'Product not found'], 404);
         }
 
-        $stockQuantity = $product->stock;
+        // Restore stock when item is removed
+        $product->increment('stock', $cartLine->quantity);
+
+        // Delete cart item
         $cartLine->delete();
 
-        return response()->json(['stock' => $stockQuantity], 200);
+        return response()->json(['success' => true, 'new_stock' => $product->stock]);
     }
 }
