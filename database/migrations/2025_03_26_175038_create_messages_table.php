@@ -23,7 +23,7 @@ class CreateMessagesTable extends Migration
             $table->boolean('isMe')->default(false);
             $table->timestamps();
 
-            $table->engine = 'InnoDB'; // Ensure InnoDB for foreign keys
+            $table->engine = 'InnoDB';
         });
     }
 
