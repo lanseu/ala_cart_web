@@ -6,7 +6,7 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProfilePictureController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\MessageController;
+use App\Http\Controllers\Api\MessageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -57,15 +57,11 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // Review Api //
-Route::get('/reviews', [ReviewController::class, 'index']); // Get all reviews
-Route::get('/reviews/{id}', [ReviewController::class, 'show']); // Get a single review
-Route::post('/reviews', [ReviewController::class, 'store']); // Create a review
-Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']); // Delete a review
+Route::get('/reviews', [ReviewController::class, 'index']); 
+Route::get('/reviews/{id}', [ReviewController::class, 'show']); 
+Route::post('/reviews', [ReviewController::class, 'store']); 
+Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']); 
 
 // Message Api //
-Route::get('/messages', [MessageController::class, 'index']);          // Get all messages
-Route::get('/messages/{id}', [MessageController::class, 'show']);     // Get a specific message
-Route::post('/messages', [MessageController::class, 'store']);        // Create a new message
-Route::put('/messages/{id}', [MessageController::class, 'update']);   // Update a message
-Route::delete('/messages/{id}', [MessageController::class, 'destroy']); // Delete a message
-Route::get('/messages/{id}/replies', [MessageController::class, 'getReplies']); // Get replies for a message
+Route::apiResource('messages', MessageController::class)->except(['create', 'edit']);
+Route::post('/messages/{id}/reply', [MessageController::class, 'reply']); 

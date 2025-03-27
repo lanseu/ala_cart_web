@@ -11,19 +11,14 @@ class CreateMessagesTable extends Migration
         Schema::create('messages', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->unsignedBigInteger('category_id');
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
-            $table->unsignedBigInteger('parent_id')->nullable();
-            $table->foreign('parent_id')->references('id')->on('messages')->onDelete('cascade');
             $table->string('name');
-            $table->string('iconpath');
+            $table->enum('type', ['conversation', 'promotion']); 
             $table->text('chat');
-            $table->string('timestamp');
+            $table->string('iconpath')->nullable();
+            $table->timestamp('timestamp')->useCurrent();
             $table->boolean('hasUnread')->default(false);
             $table->boolean('isMe')->default(false);
             $table->timestamps();
-
-            $table->engine = 'InnoDB';
         });
     }
 

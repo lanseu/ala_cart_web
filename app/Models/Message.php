@@ -4,17 +4,17 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Message extends Model
+class Message extends Model implements HasMedia
 {
-    use HasFactory;
+    use HasFactory, InteractsWithMedia;
 
     protected $fillable = [
         'user_id',
-        'category_id',
-        'parent_id',
+        'type',  // Changed from category_id to type
         'name',
-        'iconpath',
         'chat',
         'timestamp',
         'hasUnread',
@@ -27,12 +27,6 @@ class Message extends Model
         return $this->belongsTo(User::class);
     }
 
-    // Message belongs to a Category
-    public function category()
-    {
-        return $this->belongsTo(Category::class);
-    }
-
     // Message may have replies (Self-referencing relationship)
     public function replies()
     {
@@ -43,5 +37,17 @@ class Message extends Model
     public function parent()
     {
         return $this->belongsTo(Message::class, 'parent_id');
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('icon')
+            ->singleFile(); 
+    }
+
+    // Accessor to get the icon path
+    public function getIconPathAttribute()
+    {
+        return $this->getFirstMediaUrl('icon');
     }
 }

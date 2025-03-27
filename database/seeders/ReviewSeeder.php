@@ -17,22 +17,23 @@ class ReviewSeeder extends Seeder
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
         DB::statement('ALTER TABLE reviews AUTO_INCREMENT = 1;');
 
+        // Ensure there are at least some products
         if (Product::count() === 0) {
             Product::factory(5)->create();
         }
 
         $userIds = User::limit(10)->pluck('id')->toArray();
-        $productIds = Product::limit(5)->pluck('id')->toArray();
+        $products = Product::all();
 
-        if (empty($productIds) || empty($userIds)) {
+        if ($products->isEmpty() || empty($userIds)) {
             return;
         }
 
-        foreach (range(1, 10) as $_) {
-            $product = Product::find($productIds[array_rand($productIds)]);
+        foreach ($products as $product) {
+            // Ensure each product has at least one review
             $user = User::find($userIds[array_rand($userIds)]);
 
-            if (! Review::where('user_id', $user->id)->where('product_id', $product->id)->exists()) {
+            if (!Review::where('user_id', $user->id)->where('product_id', $product->id)->exists()) {
                 $review = Review::factory()->create([
                     'product_id' => $product->id,
                     'user_id' => $user->id,
@@ -45,6 +46,17 @@ class ReviewSeeder extends Seeder
                     $review->addMedia($imagePath)
                         ->preservingOriginal()
                         ->toMediaCollection('images');
+                }
+            }
+
+            // Optionally add extra reviews per product
+            foreach (range(1, rand(1, 3)) as $_) {
+                $extraUser = User::find($userIds[array_rand($userIds)]);
+                if (!Review::where('user_id', $extraUser->id)->where('product_id', $product->id)->exists()) {
+                    Review::factory()->create([
+                        'product_id' => $product->id,
+                        'user_id' => $extraUser->id,
+                    ]);
                 }
             }
         }
