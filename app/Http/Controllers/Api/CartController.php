@@ -49,4 +49,12 @@ class CartController extends Controller
 
         return response()->json(['success' => $this->cartService->deleteCartItem($userId, $cartLineId)]);
     }
+
+    public function getCartItemCount()
+    {
+        $userId = Auth::id();
+        $count = $this->cartService->getCartItemCount($userId);
+
+        return response()->json(['cart_count' => $count]);
+    }
 }

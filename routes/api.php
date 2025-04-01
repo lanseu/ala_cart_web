@@ -2,11 +2,11 @@
 
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
+use App\Http\Controllers\Api\MessageController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProfilePictureController;
 use App\Http\Controllers\Api\ReviewController;
 use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\Api\MessageController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -54,14 +54,24 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/cart/add', [CartController::class, 'addItem']);
     Route::put('/cart/update/{cartLineId}', [CartController::class, 'updateItem']);
     Route::delete('/cart/delete/{cartLineId}', [CartController::class, 'deleteItem']);
+    Route::get('/cart/count', [CartController::class, 'getCartItemCount']);
 });
 
-// Review Api //
-Route::get('/reviews', [ReviewController::class, 'index']); 
-Route::get('/reviews/{id}', [ReviewController::class, 'show']); 
-Route::post('/reviews', [ReviewController::class, 'store']); 
-Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']); 
+// Review API //
+Route::get('/reviews', [ReviewController::class, 'index']);
+Route::get('/reviews/{id}', [ReviewController::class, 'show']);
+Route::post('/reviews', [ReviewController::class, 'store']);
+Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
 
-// Message Api //
-Route::apiResource('messages', MessageController::class)->except(['create', 'edit']);
-Route::post('/messages/{id}/reply', [MessageController::class, 'reply']); 
+// Message API //
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/messages', [MessageController::class, 'index']); 
+    Route::post('/messages', [MessageController::class, 'store']); 
+    Route::get('/messages/{id}', [MessageController::class, 'show']); 
+    Route::put('/messages/{id}', [MessageController::class, 'update']); 
+    Route::delete('/messages/{id}', [MessageController::class, 'destroy']); 
+    
+    Route::get('/messages/user', [MessageController::class, 'getUserMessages']); 
+    Route::post('/messages/{messageId}/reply', [MessageController::class, 'reply']);
+});
+

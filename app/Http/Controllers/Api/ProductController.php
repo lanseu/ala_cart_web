@@ -43,11 +43,13 @@ class ProductController extends Controller
         if (! $product) {
             return response()->json(['message' => 'Product not found'], 404);
         }
+        $reviews = $product->reviews()->where('product_id', $id)->with('user.media')->get();
 
         return response()->json([
             'product' => $product,
-            'total_reviews' => $product->total_reviews,
-            'average_rating' => $product->average_rating,
+            'total_reviews' => $reviews->count(),
+            'average_rating' => $reviews->avg('rating') ?? 0,
+            'reviews' => $reviews,
         ]);
     }
 

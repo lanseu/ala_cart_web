@@ -151,4 +151,15 @@ class CartService
 
         return response()->json(['success' => true, 'new_stock' => $product->stock]);
     }
+
+    public function getCartItemCount($userId)
+    {
+        $cart = Cart::where('user_id', $userId)->first();
+
+        if (! $cart) {
+            return 0;
+        }
+
+        return $cart->lines->sum('quantity');
+    }
 }

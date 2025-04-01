@@ -4,7 +4,11 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MessageRequest;
+use App\Http\Requests\ReplyRequest;
+use App\Models\Message;
+use App\Models\Reply;
 use App\Services\MessageService;
+use Auth;
 use Illuminate\Http\Request;
 
 class MessageController extends Controller
@@ -29,12 +33,14 @@ class MessageController extends Controller
     public function store(MessageRequest $request)
     {
         $message = $this->messageService->createMessage($request->validated());
+
         return response()->json($message, 201);
     }
 
     public function update(Request $request, $id)
     {
         $message = $this->messageService->updateMessage($id, $request->all());
+
         return response()->json([
             'message' => 'Message updated successfully',
             'data' => $message,
@@ -44,6 +50,7 @@ class MessageController extends Controller
     public function destroy($id)
     {
         $this->messageService->deleteMessage($id);
+
         return response()->json(['message' => 'Message deleted successfully']);
     }
 
@@ -52,9 +59,32 @@ class MessageController extends Controller
         return response()->json($this->messageService->getReplies($id));
     }
 
-    public function reply(MessageRequest $request, $parentId)
+    public function reply(ReplyRequest $request, $messageId)
     {
-        $reply = $this->messageService->replyToMessage($parentId, $request->validated());
+
+        $message = Message::findOrFail($messageId);
+        $replyData = $request->validated();
+        $replyData['message_id'] = $message->id; 
+        $reply = Reply::create($replyData);
+    
         return response()->json($reply, 201);
+    }
+    
+
+
+    public function getUserMessages(Request $request)
+    {
+        $user = Auth::user();
+        if (! $user) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
+
+        $messages = $this->messageService->getMessagesByUserId($user->id);
+
+        if ($messages->isEmpty()) {
+            return response()->json(['message' => 'No messages found'], 404);
+        }
+
+        return response()->json($messages);
     }
 }

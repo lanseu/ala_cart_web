@@ -13,7 +13,7 @@ class Message extends Model implements HasMedia
 
     protected $fillable = [
         'user_id',
-        'type',  // Changed from category_id to type
+        'type',
         'name',
         'chat',
         'timestamp',
@@ -30,7 +30,7 @@ class Message extends Model implements HasMedia
     // Message may have replies (Self-referencing relationship)
     public function replies()
     {
-        return $this->hasMany(Message::class, 'parent_id');
+        return $this->hasMany(Reply::class, 'message_id');
     }
 
     // Message may belong to a parent message
@@ -42,7 +42,7 @@ class Message extends Model implements HasMedia
     public function registerMediaCollections(): void
     {
         $this->addMediaCollection('icon')
-            ->singleFile(); 
+            ->singleFile();
     }
 
     // Accessor to get the icon path

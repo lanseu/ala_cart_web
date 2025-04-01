@@ -5,7 +5,6 @@ namespace Database\Seeders;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\Storage;
 
 class MessageSeeder extends Seeder
 {
@@ -87,8 +86,8 @@ class MessageSeeder extends Seeder
 
             if (file_exists($iconPath)) {
                 $message->addMedia($iconPath)
-                        ->preservingOriginal()
-                        ->toMediaCollection('icon');
+                    ->preservingOriginal()
+                    ->toMediaCollection('icon');
             }
         }
     }

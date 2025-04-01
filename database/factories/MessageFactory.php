@@ -16,7 +16,7 @@ class MessageFactory extends Factory
     public function definition(): array
     {
         $name = $this->faker->randomElement([
-            'Nike', 'Levis', 'Converse', 'Saltrock', 'NICCE', 'Fruit of the Loom'
+            'Nike', 'Levis', 'Converse', 'Saltrock', 'NICCE', 'Fruit of the Loom',
         ]);
 
         return [
@@ -36,13 +36,13 @@ class MessageFactory extends Factory
     public function configure()
     {
         return $this->afterCreating(function (Message $message) {
-            $iconFileName = strtolower(str_replace(' ', '_', $message->name)) . ".jpg"; // Match file naming convention
+            $iconFileName = strtolower(str_replace(' ', '_', $message->name)).'.jpg'; // Match file naming convention
             $iconPath = storage_path("app/public/icons/{$iconFileName}");
 
             if (file_exists($iconPath)) {
                 $message->addMedia($iconPath)
-                        ->preservingOriginal()
-                        ->toMediaCollection('icon');
+                    ->preservingOriginal()
+                    ->toMediaCollection('icon');
             }
         });
     }
