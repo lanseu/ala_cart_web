@@ -70,8 +70,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/messages/{id}', [MessageController::class, 'show']); 
     Route::put('/messages/{id}', [MessageController::class, 'update']); 
     Route::delete('/messages/{id}', [MessageController::class, 'destroy']); 
-    
-    Route::get('/messages/user', [MessageController::class, 'getUserMessages']); 
-    Route::post('/messages/{messageId}/reply', [MessageController::class, 'reply']);
+
+    Route::post('messages/{messageId}/reply', [MessageController::class, 'replyToMessage']);
+    Route::get('/messages/{id}/replies', [MessageController::class, 'getReplies']);
+    Route::get('/user/{userId}/messages', [MessageController::class, 'getMessagesByUserId']);    
 });
 

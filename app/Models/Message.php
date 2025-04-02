@@ -19,21 +19,22 @@ class Message extends Model implements HasMedia
         'timestamp',
         'hasUnread',
         'isMe',
+        'parent_id', 
     ];
 
-    // Message belongs to a User
+    // ✅ A message belongs to a user
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    // Message may have replies (Self-referencing relationship)
+    // ✅ A message may have multiple replies (self-referencing relationship)
     public function replies()
     {
-        return $this->hasMany(Reply::class, 'message_id');
+        return $this->hasMany(Message::class, 'parent_id');
     }
 
-    // Message may belong to a parent message
+    // ✅ A message may belong to a parent message (if it's a reply)
     public function parent()
     {
         return $this->belongsTo(Message::class, 'parent_id');
@@ -41,13 +42,12 @@ class Message extends Model implements HasMedia
 
     public function registerMediaCollections(): void
     {
-        $this->addMediaCollection('icon')
-            ->singleFile();
+        $this->addMediaCollection('icon')->singleFile();
     }
 
-    // Accessor to get the icon path
+    // ✅ Accessor to get the icon path
     public function getIconPathAttribute()
     {
-        return $this->getFirstMediaUrl('icon');
+        return $this->getFirstMediaUrl('icon') ?: null;
     }
 }
