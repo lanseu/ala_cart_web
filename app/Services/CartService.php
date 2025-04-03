@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Product;
+use Illuminate\Support\Facades\DB;
 use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
 use Lunar\Models\Channel;
@@ -53,14 +54,14 @@ class CartService
         ];
     }
 
-    public function addItemToCart($userId, $productId, $quantity)
+    public function addItemToCart($userId, $variantId, $quantity)
     {
         $currency = Currency::first();
         $channel = Channel::first();
 
         $customer = Customer::where('user_id', $userId)->first();
 
-        if (! $customer) {
+        if (!$customer) {
             return response()->json(['error' => 'Customer not found for this user'], 404);
         }
 
@@ -73,9 +74,10 @@ class CartService
             ]
         );
 
-        $productVariant = ProductVariant::find($productId);
 
-        if (! $productVariant) {
+        $productVariant = ProductVariant::find($variantId);
+
+        if (!$productVariant) {
             return response()->json(['error' => 'Product variant not found'], 404);
         }
 
@@ -86,7 +88,7 @@ class CartService
         $cartLine = CartLine::updateOrCreate(
             [
                 'cart_id' => $cart->id,
-                'purchasable_id' => $productId,
+                'purchasable_id' => $variantId,  
                 'purchasable_type' => 'Lunar\Models\ProductVariant',
             ],
             ['quantity' => $quantity]
@@ -114,43 +116,63 @@ class CartService
 
         $stockDifference = $newQuantity - $cartLine->quantity;
 
-        // Check if stock is available
+   
         if ($stockDifference > 0 && $productVariant->stock < $stockDifference) {
             return response()->json(['error' => 'Not enough stock available'], 400);
         }
 
-        // Adjust stock based on quantity change
+        
         if ($stockDifference > 0) {
             $productVariant->decrement('stock', $stockDifference);
         } else {
             $productVariant->increment('stock', abs($stockDifference));
         }
 
-        // Update cart item quantity
         $cartLine->update(['quantity' => $newQuantity]);
 
-        return ['success' => true, 'new_stock' => $productVariant->stock];
+        return ['success' => true, 'stock' => $productVariant->stock];
     }
 
     public function deleteCartItem($userId, $cartLineId)
     {
-        $cartLine = CartLine::whereHas('cart', fn ($query) => $query->where('user_id', $userId))
-            ->findOrFail($cartLineId);
+        try {
+            \Log::info("Attempting to delete CartLine ID: $cartLineId for User: $userId");
 
-        $product = Product::find($cartLine->product_id);
+            
+            $cartLine = CartLine::whereHas('cart', fn ($query) => $query->where('user_id', $userId))
+                ->find($cartLineId);
 
-        if (! $product) {
-            return response()->json(['error' => 'Product not found'], 404);
+            if (!$cartLine) {
+                \Log::error("CartLine not found with ID: $cartLineId for User: $userId");
+                return ['error' => 'Cart item not found', 'status' => 404];
+            }
+
+            
+            $productVariant = ProductVariant::find($cartLine->purchasable_id);
+
+            if ($productVariant) {
+                \Log::info("Restoring stock for Variant ID: {$productVariant->id}, Quantity: {$cartLine->quantity}");
+                $productVariant->increment('stock', $cartLine->quantity);
+            } else {
+                \Log::warning("Product Variant not found for CartLine ID: $cartLineId");
+            }
+
+          
+            $cart = $cartLine->cart;
+            $cartLine->delete();
+            if ($cart && $cart->lines()->count() == 0) {
+                \Log::info("Cart with ID: {$cart->id} is empty, deleting the cart.");
+                $cart->delete();
+            }
+
+            return ['success' => true, 'status' => 200];
+
+        } catch (\Exception $e) {
+            \Log::error("Error deleting cart item: " . $e->getMessage());
+            return ['error' => 'An error occurred while deleting the cart item', 'status' => 500];
         }
-
-        // Restore stock when item is removed
-        $product->increment('stock', $cartLine->quantity);
-
-        // Delete cart item
-        $cartLine->delete();
-
-        return response()->json(['success' => true, 'new_stock' => $product->stock]);
     }
+
 
     public function getCartItemCount($userId)
     {
@@ -161,5 +183,27 @@ class CartService
         }
 
         return $cart->lines->sum('quantity');
+    }
+
+    public function calculateTotalAmount(Cart $cart)
+    {
+        $subTotal = $cart->lines->sum(function ($line) {
+            return $line->price * $line->quantity;
+        });
+
+        $discountTotal = 0; 
+        $shippingTotal = 5;
+        $taxTotal = $subTotal * 0.1; 
+
+        return [
+            'sub_total' => $subTotal,
+            'discounts' => [], 
+            'discount_total' => $discountTotal,
+            'shipping' => [], 
+            'shipping_total' => $shippingTotal,
+            'taxes' => [], 
+            'tax_total' => $taxTotal,
+            'total' => $subTotal - $discountTotal + $shippingTotal + $taxTotal,
+        ];
     }
 }

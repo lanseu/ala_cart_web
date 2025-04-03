@@ -55,6 +55,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/cart/update/{cartLineId}', [CartController::class, 'updateItem']);
     Route::delete('/cart/delete/{cartLineId}', [CartController::class, 'deleteItem']);
     Route::get('/cart/count', [CartController::class, 'getCartItemCount']);
+    Route::post('checkout', [CartController::class, 'checkout'])->middleware('auth:sanctum');
 });
 
 // Review API //
