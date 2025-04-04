@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\MessageController;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProfilePictureController;
 use App\Http\Controllers\Api\ReviewController;
@@ -77,3 +78,11 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user/{userId}/messages', [MessageController::class, 'getMessagesByUserId']);    
 });
 
+    // Order API //
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::get('/order', [OrderController::class, 'index']);
+        Route::get('/order/{id}', [OrderController::class, 'show']);
+        Route::post('/order/store', [OrderController::class, 'store']);
+        Route::delete('order/{id}/delete', [OrderController::class, 'destroy']); 
+        Route::get('order/user/{userId}', [OrderController::class, 'getByUserId']);
+    });
