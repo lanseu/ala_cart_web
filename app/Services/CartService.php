@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
+use Log;
 use Lunar\Models\Cart;
 use Lunar\Models\CartLine;
 use Lunar\Models\Channel;
@@ -53,18 +54,16 @@ class CartService
             }),
         ];
     }
-
-    public function addItemToCart($userId, $variantId, $quantity)
+    public function addItem($userId, $productId, $variantId, $quantity)
     {
         $currency = Currency::first();
         $channel = Channel::first();
-
+    
         $customer = Customer::where('user_id', $userId)->first();
-
         if (!$customer) {
-            return response()->json(['error' => 'Customer not found for this user'], 404);
+            return ['error' => 'Customer not found for this user.'];
         }
-
+    
         $cart = Cart::firstOrCreate(
             ['user_id' => $userId],
             [
@@ -73,35 +72,40 @@ class CartService
                 'channel_id' => $channel->id,
             ]
         );
-
-
-        $productVariant = ProductVariant::find($variantId);
-
+    
+        Log::info("Add to Cart Request: Product ID: $productId, Variant ID: $variantId");
+    
+        $productVariant = ProductVariant::where('id', $variantId)
+            ->where('product_id', $productId)
+            ->first();
+    
         if (!$productVariant) {
-            return response()->json(['error' => 'Product variant not found'], 404);
+            Log::error("Invalid product variant: Variant ID: $variantId does not belong to Product ID: $productId");
+            return ['error' => 'Invalid product variant selected.'];
         }
-
+    
         if ($productVariant->stock < $quantity) {
-            return response()->json(['error' => 'Not enough stock available'], 400);
+            return ['error' => 'Not enough stock available.'];
         }
-
+    
         $cartLine = CartLine::updateOrCreate(
             [
                 'cart_id' => $cart->id,
-                'purchasable_id' => $variantId,  
+                'purchasable_id' => $variantId,
                 'purchasable_type' => 'Lunar\Models\ProductVariant',
             ],
             ['quantity' => $quantity]
         );
-
+    
         $productVariant->decrement('stock', $quantity);
-
-        return response()->json([
-            'message' => 'Item added to cart successfully',
+    
+        return [
+            'message' => 'Item added to cart successfully!',
             'cart_line' => $cartLine,
             'remaining_stock' => $productVariant->stock,
-        ]);
+        ];
     }
+    
 
     public function updateCartItem($userId, $cartLineId, $newQuantity)
     {

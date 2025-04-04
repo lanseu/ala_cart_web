@@ -4,13 +4,18 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CartRequest;
+use App\Models\Customer;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use App\Services\CartService;
 use App\Services\CheckoutService; // Import the CheckoutService
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Log;
 use Lunar\Models\CartLine;
 use Lunar\Models\Cart;
+use Lunar\Models\Channel;
+use Lunar\Models\Currency;
 
 class CartController extends Controller
 {
@@ -32,15 +37,38 @@ class CartController extends Controller
         return response()->json($this->cartService->getUserCart($userId));
     }
 
-    public function addItem(CartRequest $request)
-    {
-        $userId = Auth::id();
+      // Add item to cart
+      public function addItem(CartRequest $request, CartService $cartService)
+      {
 
-        return response()->json(
-            $this->cartService->addItemToCart($userId, $request->product_id, $request->quantity)
-        );
-    }
+          $validated = $request->validated();
+  
 
+          $userId = Auth::id();
+  
+          if (!$userId) {
+              return response()->json(['error' => 'User not authenticated'], 401);
+          }
+
+          $customer = Customer::where('user_id', $userId)->first();
+  
+          if (!$customer) {
+              return response()->json(['error' => 'Customer not found for this user.'], 400);
+          }
+  
+          
+          $result = $cartService->addItem($customer->id, $validated['product_id'], $validated['variant_id'], $validated['quantity']);
+  
+          if (isset($result['error'])) {
+              return response()->json(['error' => $result['error']], 400);
+          }
+  
+          return response()->json([
+              'message' => $result['message'],
+              'cart_line' => $result['cart_line'],
+              'remaining_stock' => $result['remaining_stock'],
+          ]);
+      }
     public function updateItem(Request $request, $cartLineId)
     {
         $userId = Auth::id();
