@@ -39,10 +39,25 @@ class OrderController extends Controller
         return response()->json(['message' => 'Order deleted successfully.']);
     }
     public function getByUserId($userId): JsonResponse
-    {
-        $orders = $this->orderService->getByUserId($userId);
-        return response()->json(['orders' => $orders]);
-    }
+{
+    $orders = $this->orderService->getByUserId($userId);
 
+    $ordersWithMedia = $orders->map(function ($order) {
+        $firstLine = $order->lines->first();
+
+        return [
+            'id' => $order->id,
+            'total' => $order->total,
+            'created_at' => $order->created_at->toDateTimeString(),
+            'customer_reference' => $order->customer_reference ?? 'N/A',
+            'items_count' => $order->lines->count(),
+            'image_url' => $firstLine && $firstLine->product
+                ? $firstLine->product->getFirstMediaUrl('images')
+                : 'https://via.placeholder.com/60', 
+        ];
+    });
+
+    return response()->json(['orders' => $ordersWithMedia]);
+}
 
 }

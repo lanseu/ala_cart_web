@@ -40,8 +40,9 @@ class OrderService
 
     public function getById(int $id)
     {
-        return Order::with('lines')->findOrFail($id);
+        return Order::with('lines')->findOrFail($id)->append('image_url');
     }
+    
     public function delete(int $id): bool
     {
         return DB::transaction(function () use ($id) {

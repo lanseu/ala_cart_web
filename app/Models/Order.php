@@ -3,9 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-class Order extends Model
+class Order extends Model implements HasMedia
 {
+    use InteractsWithMedia;
+
     protected $table = 'lunar_orders';
 
     protected $fillable = [
@@ -24,5 +28,15 @@ class Order extends Model
     public function lines()
     {
         return $this->hasMany(OrderLine::class, 'order_id');
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('product')->singleFile();
+    }
+
+    public function getImageUrlAttribute(): ?string
+    {
+        return $this->getFirstMediaUrl('product');
     }
 }
