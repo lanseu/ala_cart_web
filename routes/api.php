@@ -56,7 +56,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('/cart/update/{cartLineId}', [CartController::class, 'updateItem']);
     Route::delete('/cart/delete/{cartLineId}', [CartController::class, 'deleteItem']);
     Route::get('/cart/count', [CartController::class, 'getCartItemCount']);
-    Route::post('checkout', [CartController::class, 'checkout'])->middleware('auth:sanctum');
+    Route::post('/checkout', [CartController::class, 'processOrder']);
 });
 
 // Review API //
@@ -67,22 +67,22 @@ Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
 
 // Message API //
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/messages', [MessageController::class, 'index']); 
-    Route::post('/messages', [MessageController::class, 'store']); 
-    Route::get('/messages/{id}', [MessageController::class, 'show']); 
-    Route::put('/messages/{id}', [MessageController::class, 'update']); 
-    Route::delete('/messages/{id}', [MessageController::class, 'destroy']); 
+    Route::get('/messages', [MessageController::class, 'index']);
+    Route::post('/messages', [MessageController::class, 'store']);
+    Route::get('/messages/{id}', [MessageController::class, 'show']);
+    Route::put('/messages/{id}', [MessageController::class, 'update']);
+    Route::delete('/messages/{id}', [MessageController::class, 'destroy']);
 
     Route::post('messages/{messageId}/reply', [MessageController::class, 'replyToMessage']);
     Route::get('/messages/{id}/replies', [MessageController::class, 'getReplies']);
-    Route::get('/user/{userId}/messages', [MessageController::class, 'getMessagesByUserId']);    
+    Route::get('/user/{userId}/messages', [MessageController::class, 'getMessagesByUserId']);
 });
 
-    // Order API //
-    Route::middleware('auth:sanctum')->group(function () {
-        Route::get('/order', [OrderController::class, 'index']);
-        Route::get('/order/{id}', [OrderController::class, 'show']);
-        Route::post('/order/store', [OrderController::class, 'store']);
-        Route::delete('order/{id}/delete', [OrderController::class, 'destroy']); 
-        Route::get('order/user/{userId}', [OrderController::class, 'getByUserId']);
-    });
+// Order API //
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/order', [OrderController::class, 'index']);
+    Route::get('/order/{id}', [OrderController::class, 'show']);
+    Route::post('/order/store', [OrderController::class, 'store']);
+    Route::delete('order/{id}/delete', [OrderController::class, 'destroy']);
+    Route::get('order/user/{userId}', [OrderController::class, 'getByUserId']);
+});

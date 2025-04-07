@@ -19,7 +19,7 @@ class Message extends Model implements HasMedia
         'timestamp',
         'hasUnread',
         'isMe',
-        'parent_id', 
+        'parent_id',
     ];
 
     // ✅ A message belongs to a user

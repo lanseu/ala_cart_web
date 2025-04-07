@@ -3,7 +3,6 @@
 namespace App\Services;
 
 use App\Models\Message;
-use App\Models\Reply;
 
 class MessageService
 {
@@ -31,26 +30,25 @@ class MessageService
 
     // Get messages by userId
     public function getMessagesByUserId($userId)
-{
-    $messages = Message::where('user_id', $userId)
-                       ->whereNull('parent_id')  // Get only store messages with no parent_id
-                       ->get()
-                       ->map(function ($message) {
-                           return [
-                               'id' => $message->id,
-                               'chat' => $message->chat,
-                               'timestamp' => $message->created_at,
-                               'isMe' => $message->isMe,  
-                               'iconpath' => $message->getFirstMediaUrl('icon') ?: asset('default-icon.png'),
-                               'name' => $message->name,
-                               'type' => $message->type,
-                               'hasUnread' => $message->hasUnread,
-                           ];
-                       });
+    {
+        $messages = Message::where('user_id', $userId)
+            ->whereNull('parent_id')  // Get only store messages with no parent_id
+            ->get()
+            ->map(function ($message) {
+                return [
+                    'id' => $message->id,
+                    'chat' => $message->chat,
+                    'timestamp' => $message->created_at,
+                    'isMe' => $message->isMe,
+                    'iconpath' => $message->getFirstMediaUrl('icon') ?: asset('default-icon.png'),
+                    'name' => $message->name,
+                    'type' => $message->type,
+                    'hasUnread' => $message->hasUnread,
+                ];
+            });
 
-    return response()->json($messages);
-}
-    
+        return response()->json($messages);
+    }
 
     // Get message by ID
     public function getMessageById($id)
@@ -93,26 +91,25 @@ class MessageService
 
     public function replyToMessage($messageId, $user, $fullName, $chatContent)
     {
-        if (!$user) {
+        if (! $user) {
             throw new \Exception('User not authenticated');
         }
 
-      
-        \Log::info("Fetching original message with ID: " . json_encode($messageId));
+        \Log::info('Fetching original message with ID: '.json_encode($messageId));
 
         $originalMessage = Message::findOrFail($messageId);
 
-        if (!$originalMessage) {
-            \Log::error("❌ Original message not found!");
+        if (! $originalMessage) {
+            \Log::error('❌ Original message not found!');
             throw new \Exception('Original message not found');
         }
 
         $profilePicture = $user->getFirstMediaUrl('profile_picture') ?: null;
-        \Log::info("Creating reply with parent_id: " . $originalMessage->id);
+        \Log::info('Creating reply with parent_id: '.$originalMessage->id);
 
         $reply = Message::create([
             'user_id' => $user->id,
-            'name' => $fullName, 
+            'name' => $fullName,
             'type' => 'conversation',
             'chat' => $chatContent,
             'parent_id' => $originalMessage->id,
@@ -128,6 +125,4 @@ class MessageService
 
         return $reply;
     }
-
-
 }

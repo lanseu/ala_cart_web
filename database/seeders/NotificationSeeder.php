@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\Notification;
 use App\Models\User;
+use Illuminate\Database\Seeder;
 
 class NotificationSeeder extends Seeder
 {
@@ -72,13 +72,13 @@ class NotificationSeeder extends Seeder
 
             // Create Notification
             $notification = Notification::create([
-                'user_id'     => $data['user_id'],
+                'user_id' => $data['user_id'],
                 'sender_name' => $data['sender_name'],
-                'title'       => $data['title'],
-                'body'        => $data['body'],
-                'type'        => $data['type'],
-                'status'      => $data['status'],
-                'created_at'  => now(),
+                'title' => $data['title'],
+                'body' => $data['body'],
+                'type' => $data['type'],
+                'status' => $data['status'],
+                'created_at' => now(),
             ]);
 
             // Attach icon using Spatie Media Library

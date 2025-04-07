@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia;
 use Spatie\MediaLibrary\InteractsWithMedia;
 
@@ -18,7 +18,7 @@ class Notification extends Model implements HasMedia
         'body',
         'type',
         'status',
-        'created_at'
+        'created_at',
     ];
 
     protected $casts = [
@@ -40,4 +40,3 @@ class Notification extends Model implements HasMedia
         return $this->getFirstMediaUrl('icon');
     }
 }
-

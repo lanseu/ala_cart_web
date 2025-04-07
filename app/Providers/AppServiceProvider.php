@@ -11,6 +11,7 @@ use Illuminate\Support\ServiceProvider;
 use Lunar\Admin\Support\Facades\LunarPanel;
 use Lunar\Base\ShippingModifiers;
 use Lunar\Shipping\ShippingPlugin;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -44,5 +45,8 @@ class AppServiceProvider extends ServiceProvider
             \App\Models\Product::class,
             // \App\Models\CustomProduct::class,
         );
+        Relation::morphMap([
+            'product_variant' => \App\Models\ProductVariant::class,
+        ]);
     }
 }

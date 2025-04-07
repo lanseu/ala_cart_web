@@ -11,7 +11,7 @@ class ReplyRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true; 
+        return true;
     }
 
     /**
@@ -24,7 +24,7 @@ class ReplyRequest extends FormRequest
         return [
             'user_id' => 'required|exists:users,id',
             'chat' => 'required|string',
-            'type' => 'required|in:conversation,promotion', 
+            'type' => 'required|in:conversation,promotion',
         ];
     }
 }

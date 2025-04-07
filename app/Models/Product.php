@@ -3,12 +3,14 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Lunar\Models\Product as LunarProduct;
+use Spatie\MediaLibrary\HasMedia;
+use Spatie\MediaLibrary\InteractsWithMedia;
 
-
-class Product extends LunarProduct
+class Product extends LunarProduct implements HasMedia
 {
+    use InteractsWithMedia;
+
     public function reviews(): HasMany
     {
         return $this->hasMany(Review::class, 'product_id');
@@ -22,5 +24,11 @@ class Product extends LunarProduct
     public function getAverageRatingAttribute(): float
     {
         return round($this->reviews()->avg('rating') ?? 0, 1);
+    }
+
+    public function registerMediaCollections(): void
+    {
+        $this->addMediaCollection('images')
+            ->useDisk('public');
     }
 }

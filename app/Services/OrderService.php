@@ -42,7 +42,7 @@ class OrderService
     {
         return Order::with('lines')->findOrFail($id)->append('image_url');
     }
-    
+
     public function delete(int $id): bool
     {
         return DB::transaction(function () use ($id) {
@@ -52,6 +52,7 @@ class OrderService
             return $order->delete();
         });
     }
+
     public function getByUserId(int $userId)
     {
         return Order::with('lines')
@@ -59,5 +60,4 @@ class OrderService
             ->latest()
             ->get();
     }
-
 }

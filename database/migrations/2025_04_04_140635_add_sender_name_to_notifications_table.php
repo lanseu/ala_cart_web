@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::table('notifications', function (Blueprint $table) {
             $table->string('sender_name')->nullable();
         });
-        
+
     }
 
     /**

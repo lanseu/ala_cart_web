@@ -25,6 +25,7 @@ class NotificationService
     {
         $notification = Notification::findOrFail($id);
         $notification->update($data);
+
         return $notification;
     }
 

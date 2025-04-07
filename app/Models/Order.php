@@ -14,6 +14,7 @@ class Order extends Model implements HasMedia
 
     protected $fillable = [
         'user_id',
+        'customer_id',
         'status',
         'sub_total',
         'discount_total',
@@ -22,7 +23,9 @@ class Order extends Model implements HasMedia
         'total',
         'currency_code',
         'customer_reference',
-        'notes'
+        'notes',
+        'channel_id',
+        'tax_breakdown',
     ];
 
     public function lines()

@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\NotificationRequest;
 use App\Services\NotificationService;
-use Illuminate\Http\Request;
 
 class NotificationController extends Controller
 {
@@ -24,6 +23,7 @@ class NotificationController extends Controller
     public function store(NotificationRequest $request)
     {
         $notification = $this->notificationService->create($request->validated());
+
         return response()->json($notification, 201);
     }
 
@@ -35,12 +35,14 @@ class NotificationController extends Controller
     public function update(NotificationRequest $request, string $id)
     {
         $notification = $this->notificationService->update($id, $request->validated());
+
         return response()->json($notification);
     }
 
     public function destroy(string $id)
     {
         $this->notificationService->delete($id);
+
         return response()->json(null, 204);
     }
 }

@@ -3,10 +3,11 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Lunar\Models\CartLine;
+use Lunar\Models\Cart as LunarCart;
 
-class Cart extends Model
+class Cart extends LunarCart
 {
     use HasFactory;
 
@@ -27,9 +28,8 @@ class Cart extends Model
         return $this->hasMany(CartLine::class);
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
-
 }

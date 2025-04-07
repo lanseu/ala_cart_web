@@ -2,14 +2,9 @@
 
 namespace App\Services;
 
-use App\Models\Product;
-use Illuminate\Support\Facades\DB;
 use Log;
-use Lunar\Models\Cart;
+use Lunar\Models\Cart;  // Use Lunar's Cart model
 use Lunar\Models\CartLine;
-use Lunar\Models\Channel;
-use Lunar\Models\Currency;
-use Lunar\Models\Customer;
 use Lunar\Models\ProductVariant;
 
 class CartService
@@ -54,40 +49,28 @@ class CartService
             }),
         ];
     }
-    public function addItem($userId, $productId, $variantId, $quantity)
+
+    public function addItemToCart($cart, $productId, $variantId, $quantity)
     {
-        $currency = Currency::first();
-        $channel = Channel::first();
-    
-        $customer = Customer::where('user_id', $userId)->first();
-        if (!$customer) {
-            return ['error' => 'Customer not found for this user.'];
-        }
-    
-        $cart = Cart::firstOrCreate(
-            ['user_id' => $userId],
-            [
-                'customer_id' => $customer->id,
-                'currency_id' => $currency->id,
-                'channel_id' => $channel->id,
-            ]
-        );
-    
         Log::info("Add to Cart Request: Product ID: $productId, Variant ID: $variantId");
-    
+
+        // Check for product variant
         $productVariant = ProductVariant::where('id', $variantId)
             ->where('product_id', $productId)
             ->first();
-    
-        if (!$productVariant) {
+
+        if (! $productVariant) {
             Log::error("Invalid product variant: Variant ID: $variantId does not belong to Product ID: $productId");
+
             return ['error' => 'Invalid product variant selected.'];
         }
-    
+
+        // Check stock
         if ($productVariant->stock < $quantity) {
             return ['error' => 'Not enough stock available.'];
         }
-    
+
+        // Update or create CartLine for this item in the existing cart
         $cartLine = CartLine::updateOrCreate(
             [
                 'cart_id' => $cart->id,
@@ -96,16 +79,16 @@ class CartService
             ],
             ['quantity' => $quantity]
         );
-    
+
+        // Decrement the stock of the product variant
         $productVariant->decrement('stock', $quantity);
-    
+
         return [
             'message' => 'Item added to cart successfully!',
             'cart_line' => $cartLine,
             'remaining_stock' => $productVariant->stock,
         ];
     }
-    
 
     public function updateCartItem($userId, $cartLineId, $newQuantity)
     {
@@ -120,12 +103,10 @@ class CartService
 
         $stockDifference = $newQuantity - $cartLine->quantity;
 
-   
         if ($stockDifference > 0 && $productVariant->stock < $stockDifference) {
             return response()->json(['error' => 'Not enough stock available'], 400);
         }
 
-        
         if ($stockDifference > 0) {
             $productVariant->decrement('stock', $stockDifference);
         } else {
@@ -142,16 +123,15 @@ class CartService
         try {
             \Log::info("Attempting to delete CartLine ID: $cartLineId for User: $userId");
 
-            
             $cartLine = CartLine::whereHas('cart', fn ($query) => $query->where('user_id', $userId))
                 ->find($cartLineId);
 
-            if (!$cartLine) {
+            if (! $cartLine) {
                 \Log::error("CartLine not found with ID: $cartLineId for User: $userId");
+
                 return ['error' => 'Cart item not found', 'status' => 404];
             }
 
-            
             $productVariant = ProductVariant::find($cartLine->purchasable_id);
 
             if ($productVariant) {
@@ -161,7 +141,6 @@ class CartService
                 \Log::warning("Product Variant not found for CartLine ID: $cartLineId");
             }
 
-          
             $cart = $cartLine->cart;
             $cartLine->delete();
             if ($cart && $cart->lines()->count() == 0) {
@@ -172,11 +151,11 @@ class CartService
             return ['success' => true, 'status' => 200];
 
         } catch (\Exception $e) {
-            \Log::error("Error deleting cart item: " . $e->getMessage());
+            \Log::error('Error deleting cart item: '.$e->getMessage());
+
             return ['error' => 'An error occurred while deleting the cart item', 'status' => 500];
         }
     }
-
 
     public function getCartItemCount($userId)
     {
@@ -187,27 +166,5 @@ class CartService
         }
 
         return $cart->lines->sum('quantity');
-    }
-
-    public function calculateTotalAmount(Cart $cart)
-    {
-        $subTotal = $cart->lines->sum(function ($line) {
-            return $line->price * $line->quantity;
-        });
-
-        $discountTotal = 0; 
-        $shippingTotal = 5;
-        $taxTotal = $subTotal * 0.1; 
-
-        return [
-            'sub_total' => $subTotal,
-            'discounts' => [], 
-            'discount_total' => $discountTotal,
-            'shipping' => [], 
-            'shipping_total' => $shippingTotal,
-            'taxes' => [], 
-            'tax_total' => $taxTotal,
-            'total' => $subTotal - $discountTotal + $shippingTotal + $taxTotal,
-        ];
     }
 }
