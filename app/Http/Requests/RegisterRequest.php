@@ -19,7 +19,6 @@ class RegisterRequest extends FormRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    // App\Http\Requests\RegisterRequest.php
     public function rules(): array
     {
         return [
@@ -29,7 +28,10 @@ class RegisterRequest extends FormRequest
             'email' => 'required|string|email|max:255|unique:users',
             'password' => 'required|string|min:8|confirmed',
             'phone_number' => 'nullable|string|max:15',
-            'address' => 'nullable|string|max:255',
+            'street_address' => 'nullable|string|max:255',
+            'province' => 'nullable|string|max:255',
+            'city' => 'nullable|string|max:255',
+            'zip_code' => 'nullable|string|max:10',
             'profile_picture' => 'nullable|image|max:2048',
         ];
     }

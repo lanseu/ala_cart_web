@@ -31,7 +31,10 @@ class User extends Authenticatable implements HasMedia
         'email',
         'password',
         'phone_number',
-        'address',
+        'street_address', 
+        'zip_code',       
+        'province',       
+        'city',           
         'profile_picture',
     ];
 
@@ -68,4 +71,10 @@ class User extends Authenticatable implements HasMedia
 
         return $media ? $media->getUrl() : asset('public\storage\profile_pictures\default_profile.jpg');
     }
+
+    public function getFullAddressAttribute()
+    {
+        return "{$this->street_address}, {$this->city}, {$this->province}, {$this->zip_code}";
+    }
+
 }

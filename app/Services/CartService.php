@@ -3,7 +3,8 @@
 namespace App\Services;
 
 use Log;
-use Lunar\Models\Cart;  // Use Lunar's Cart model
+use Lunar\Facades\DB;
+use Lunar\Models\Cart;  
 use Lunar\Models\CartLine;
 use Lunar\Models\ProductVariant;
 
@@ -12,43 +13,74 @@ class CartService
     public function getUserCart($userId)
     {
         $cart = Cart::where('user_id', $userId)
-            ->with('lines.purchasable.prices') // Load purchasable and its prices
+            ->with('lines.purchasable.prices') // Eager load prices initially
             ->first();
-
-        if (! $cart) {
+    
+        if (!$cart) {
             return ['message' => 'Cart not found'];
         }
-
+    
         return [
             'cart_id' => $cart->id,
             'items' => $cart->lines->map(function ($line) {
-                $variant = $line->purchasable; // Use 'purchasable' for polymorphic relation
-
+                $variant = $line->purchasable;
+    
                 if (! $variant) {
                     return [
                         'id' => $line->id,
                         'quantity' => $line->quantity,
                         'total' => 0,
-                        'purchasable' => null, // Handle missing variant gracefully
+                        'purchasable' => null,
                     ];
                 }
-
+    
+                $quantity = $line->quantity;
+    
+                // Get matching price from lunar_prices table directly
+                $priceData = DB::table('lunar_prices')
+                    ->where('priceable_id', $variant->id)
+                    ->where('priceable_type', 'product_variant') 
+                    ->where('min_quantity', '<=', $quantity)
+                    ->orderByDesc('min_quantity')
+                    ->first();
+    
+                $price = $priceData?->price ?? 0;
+                $total = $price * $quantity;
+    
+                // Get the variant options (like UK size 10)
+                $optionText = '';
+                $optionValues = DB::table('lunar_product_option_value_product_variant')
+                    ->join('lunar_product_option_values', 'lunar_product_option_value_product_variant.value_id', '=', 'lunar_product_option_values.id')
+                    ->where('lunar_product_option_value_product_variant.variant_id', $variant->id)
+                    ->get();
+    
+                if ($optionValues->isNotEmpty()) {
+                    // Extract 'en' from the JSON 'name' field and join values if there are multiple options
+                    $optionText = $optionValues->map(function ($optionValue) {
+                        // Decode the JSON and get the 'en' value
+                        $name = json_decode($optionValue->name, true);
+                        return $name['en'] ?? ''; // Assuming the 'en' key holds the value
+                    })->join(', ');
+                }
+    
                 return [
                     'id' => $line->id,
-                    'quantity' => $line->quantity,
-                    'total' => $line->price ?? (($variant->prices->first()->price->value ?? 0) * $line->quantity),
+                    'quantity' => $quantity,
+                    'total' => $total,
                     'purchasable' => [
                         'id' => $variant->id,
                         'sku' => $variant->sku,
-                        'price' => optional($variant->prices->first())->price ?? null,
+                        'price' => $price,
                         'stock' => $variant->stock,
                         'product_name' => optional($variant->product)->translateAttribute('name') ?? 'Unknown Product',
                         'image' => optional($variant->getThumbnail())->getUrl(),
+                        'option' => $optionText,  // Add the option (e.g., UK 10 for shoes)
                     ],
                 ];
             }),
         ];
     }
+    
 
     public function addItemToCart($cart, $productId, $variantId, $quantity)
     {

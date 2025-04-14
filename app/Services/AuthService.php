@@ -20,7 +20,10 @@ class AuthService
                 'email' => $data['email'],
                 'password' => bcrypt($data['password']),
                 'phone_number' => $data['phone_number'] ?? null,
-                'address' => $data['address'] ?? null,
+                'street_address' => $data['street_address'] ?? null,
+                'province' => $data['province'] ?? null,
+                'city' => $data['city'] ?? null,
+                'zip_code' => $data['zip_code'] ?? null,
                 'profile_picture' => $data['profile_picture'] ?? null,
             ]);
 

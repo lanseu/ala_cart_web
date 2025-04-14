@@ -33,7 +33,7 @@ class OrderSeeder extends Seeder
 
             $cardTypes = ['visa', 'mastercard'];
 
-            for ($i = 0; $i < 201; $i++) {
+            for ($i = 0; $i < 10; $i++) {
                 $generator = app(OrderReferenceGenerator::class);
 
                 $itemModels = $variants->shuffle()->take($faker->numberBetween(1, 15));
@@ -114,7 +114,7 @@ class OrderSeeder extends Seeder
                 $shipping = OrderAddress::factory()->create([
                     'order_id' => $orderModel->id,
                     'type' => 'shipping',
-                    'country_id' => 235, // UK
+                    'country_id' => 175, // UK
                 ]);
 
                 if ($faker->boolean()) {
@@ -126,7 +126,7 @@ class OrderSeeder extends Seeder
                     OrderAddress::factory()->create([
                         'order_id' => $orderModel->id,
                         'type' => 'billing',
-                        'country_id' => 235, // UK
+                        'country_id' => 175, // UK
                     ]);
                 }
 

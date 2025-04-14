@@ -51,7 +51,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Cart API //
 Route::middleware('auth:sanctum')->group(function () {
-    Route::get('/cart/user', [CartController::class, 'getCart']);
+    Route::get('/cart/user/{userId}', [CartController::class, 'getCart']);
     Route::post('/cart/add', [CartController::class, 'addItem']);
     Route::put('/cart/update/{cartLineId}', [CartController::class, 'updateItem']);
     Route::delete('/cart/delete/{cartLineId}', [CartController::class, 'deleteItem']);
@@ -79,10 +79,11 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // Order API //
+Route::get('order/user/{userId}', [OrderController::class, 'getByUserId']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/order', [OrderController::class, 'index']);
     Route::get('/order/{id}', [OrderController::class, 'show']);
     Route::post('/order/store', [OrderController::class, 'store']);
     Route::delete('order/{id}/delete', [OrderController::class, 'destroy']);
-    Route::get('order/user/{userId}', [OrderController::class, 'getByUserId']);
 });

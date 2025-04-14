@@ -26,12 +26,14 @@ class CartController extends Controller
         $this->checkoutService = $checkoutService;
     }
 
-    public function getCart()
+    public function getCart($userId)
     {
-        $userId = Auth::id();
-
+        if (Auth::id() != $userId) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+    
         return response()->json($this->cartService->getUserCart($userId));
-    }
+    }    
 
     // Add item to cart
     public function addItem(CartRequest $request, CartService $cartService)
@@ -122,7 +124,8 @@ class CartController extends Controller
         try {
             $totalAmount = $this->checkoutService->calculateTotalAmount($cart);
             $order = $this->checkoutService->createOrder($cart, $userId, $totalAmount, $request->notes);
-
+            $cart->lines()->delete();   
+            
             return response()->json([
                 'order_id'       => $order->id,
                 'payment_method' => 'Cash on Delivery',
@@ -135,4 +138,5 @@ class CartController extends Controller
             ], 500);
         }
     }
+
 }
